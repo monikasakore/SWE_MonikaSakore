@@ -1,0 +1,68 @@
+# src/ingestion/main.py
+
+import time
+import requests
+import logging
+from multiprocessing import Process, Queue
+
+logging.basicConfig(level=logging.INFO)
+
+
+def satellite_data_stream(queue):
+    logging.info("Starting satellite data stream ingestion...")
+    for i in range(1, 101):  # Simulate 100 data packets
+        data_packet = {"id": i, "timestamp": time.time(), "payload": f"raw_data_{i}"}
+        queue.put(data_packet)
+        logging.info(f"Ingested data packet {i}")
+        time.sleep(0.1)  # Simulate real-time delay
+    queue.put("DONE")
+
+
+def process_data(queue_in, queue_out):
+    logging.info("Starting data processing...")
+    while True:
+        data = queue_in.get()
+        if data == "DONE":
+            queue_out.put("DONE")
+            break
+        
+        processed = {
+            "id": data["id"],
+            "timestamp": data["timestamp"],
+            "processed_payload": data["payload"].upper()
+        }
+        queue_out.put(processed)
+        logging.info(f"Processed data packet {data['id']}")
+
+
+
+def store_data(queue):
+    logging.info("Starting data storage...")
+    stored_count = 0
+    while True:
+        data = queue.get()
+        if data == "DONE":
+            break
+        
+      
+        logging.info(f"Stored processed data {data['id']} - payload: {data['processed_payload']}")
+        stored_count += 1
+    logging.info(f"Storage complete. Total stored records: {stored_count}")
+
+if __name__ == "__main__":
+    ingestion_queue = Queue()
+    processing_queue = Queue()
+
+    ingestion_process = Process(target=satellite_data_stream, args=(ingestion_queue,))
+    processing_process = Process(target=process_data, args=(ingestion_queue, processing_queue))
+    storage_process = Process(target=store_data, args=(processing_queue,))
+
+    ingestion_process.start()
+    processing_process.start()
+    storage_process.start()
+
+    ingestion_process.join()
+    processing_process.join()
+    storage_process.join()
+
+    logging.info("Satellite data pipeline run completed.")
