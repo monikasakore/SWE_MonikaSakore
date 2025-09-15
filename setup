@@ -1,0 +1,11 @@
+1.Using bash for install Dependencies
+pip install -r requirements.txt
+2. Configure Environment
+Configure pipeline settings and credentials in the config/ directory:
+Ingestion configuration: config/ingest.yaml.
+Storage configuration: config/storage.yaml.
+3.Setup Storage
+4.Start the Pipeline Components
+Start data Ingestion #bash
+python src/ingestion/main.py --config config/ingest.yaml
+5.Run test
