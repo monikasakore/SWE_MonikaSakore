@@ -1,0 +1,14 @@
+This project provides a scalable, fault-tolerant data pipeline to ingest, process, store, and deliver satellite data streams ranging from terabytes to petabytes. 
+It captures raw feeds from satellites in real time, processes them using distributed computing, stores the results in resilient storage systems (like cloud object storage or distributed filesystems), and exposes secure APIs or portals for data retrieval and analysis by scientists and agencies.
+
+Provided feautureS
+Scalability: Adapts to increasing data volumes from new missions without redesign.
+Reliability: Maintains high availability and automated recovery for mission-critical workflows.
+Speed: Leverages parallel processing and optimized storage for rapid, timely data access.
+Secure Access: Provides role-based data controls to ensure compliance and privacy for sensitive datasets.
+Versatility: Supports a wide range of applications, from Earth observation and disaster monitoring to climate research.
+
+Installation using bash
+git clone https://github.com/<your-org>/satellite-data-pipeline.git
+cd satellite-data-pipeline
+pip install -r requirements.txt
